@@ -1,0 +1,166 @@
+<html>
+<meta charset="utf-8">
+<title>primeiro jogo</title>
+<style>
+    #screen {
+        border: 1px solid #ccc;
+        image-rendering: pixelated;
+        image-rendering: crisp-edges;
+        image-rendering: crisp-edges;
+        height: 400px;
+        width: 400px;
+
+    }
+</style>
+
+
+
+<head>
+
+
+
+
+
+<body>
+    <canvas id="screen" width="10" height="10">teste</canvas>
+
+
+    <script>
+        const screen = document.getElementById('screen')
+        const context = screen.getContext('2d')
+        const jogadorAtivo = 'jogador1'
+
+        function novoJogo() {
+            const state = {
+                jogadores: {},
+                pedras: {},
+                tela: {
+                    width: 10,
+                    height: 10
+                }
+            }
+
+
+            function novoJogador(jogadorId, jogadorX, jogadorY) {
+                state.jogadores[jogadorId] = {
+                    jogadorId: jogadorId,
+                    jogadorX: jogadorX,
+                    jogadorY: jogadorY
+                }
+
+            }
+
+            function moverJogador(command) {
+
+                if (command.teclaPressionada === 'ArrowUp') {
+                    state.jogadores[command.jogadorId].jogadorY = state.jogadores[command.jogadorId].jogadorY - 1;
+                }
+
+                if (command.teclaPressionada === 'ArrowLeft') {
+                    state.jogadores[command.jogadorId].jogadorX = state.jogadores[command.jogadorId].jogadorX - 1;
+                }
+
+                if (command.teclaPressionada === 'ArrowRight') {
+                    state.jogadores[command.jogadorId].jogadorX = state.jogadores[command.jogadorId].jogadorX + 1;
+                }
+
+                if (command.teclaPressionada === 'ArrowDown') {
+                    state.jogadores[command.jogadorId].jogadorY = state.jogadores[command.jogadorId].jogadorY + 1;
+                }
+                
+                console.log(command)
+
+
+            }
+
+            function removerJogador(jogadorId) {
+                delete state.jogadores[jogadorId]
+            }
+
+            function novaPedra(pedraId, pedraX, pedraY) {
+                state.pedras[pedraId] = {
+                    pedraId: pedraId,
+                    pedraX: pedraX,
+                    pedraY: pedraY
+                }
+            }
+
+            function removerPedra(pedraId) {
+                delete state.pedras[pedraId]
+            }
+
+
+            return {
+                state,
+                novoJogador,
+                novaPedra,
+                removerJogador,
+                removerPedra,
+                moverJogador
+            }
+        }
+
+        const jogo = novoJogo();
+
+        jogo.novoJogador('jogador1', 2, 2)
+        jogo.novoJogador('jogador2', 5, 9)
+        jogo.novaPedra('pedra1', 1, 6)
+        jogo.novaPedra('pedra2', 9, 9)
+
+        document.addEventListener('keydown',teclaPressionada)
+
+        function teclaPressionada(event) {
+            jogo.moverJogador({
+                jogadorId : jogadorAtivo,
+                teclaPressionada : event.key
+            })
+        }
+
+
+
+
+
+
+        function carregarTela() {
+
+            context.clearRect(0,0, 10, 10)
+
+            for (const jogadorId in jogo.state.jogadores) {
+                const jogador = jogo.state.jogadores[jogadorId]
+                const color = 'black'
+                context.fillStyle = color
+                context.fillRect(jogador.jogadorX, jogador.jogadorY, 1, 1)
+
+            }
+
+            for (const pedraId in jogo.state.pedras) {
+                const pedra = jogo.state.pedras[pedraId]
+                const color = 'red'
+                context.fillStyle = color
+                context.fillRect(pedra.pedraX, pedra.pedraY, 1, 1)
+
+            }
+
+            requestAnimationFrame(carregarTela)
+
+        }
+
+
+        carregarTela();
+
+
+
+
+
+
+    </script>
+</body>
+
+
+
+
+</head>
+
+
+
+</html>
